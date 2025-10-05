@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/registry";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { AddTrainingDialog } from "@/components/add-training-dialog";
 import { TrainingDetailDialog } from "@/components/training-detail-dialog";
-import type { Training } from "@/types";
+import type { Training, TrainingSet } from "@/types";
 
 function App() {
 	const { trainings, addTraining, addSetToTraining, deleteSet, updateSet } =
@@ -11,6 +11,29 @@ function App() {
 	const [selectedTraining, setSelectedTraining] = useState<Training | null>(
 		null
 	);
+
+	// Wrapped handlers to keep UI in sync
+	const handleAddSet = (trainingId: string, set: Omit<TrainingSet, "date">) => {
+		addSetToTraining(trainingId, set);
+		const updatedTraining = trainings.find((t) => t.id === trainingId);
+		if (updatedTraining) {
+			setSelectedTraining(updatedTraining);
+		}
+	};
+
+	const handleDeleteSet = (trainingId: string, setIndex: number) => {
+		deleteSet(trainingId, setIndex);
+		setSelectedTraining(null); // Close dialog after deletion
+	};
+
+	const handleUpdateSet = (
+		trainingId: string,
+		setIndex: number,
+		updates: Partial<Omit<TrainingSet, "date">>
+	) => {
+		updateSet(trainingId, setIndex, updates);
+		setSelectedTraining(null); // Close dialog after update
+	};
 
 	return (
 		<div className="min-h-screen bg-background text-foreground">
@@ -51,9 +74,9 @@ function App() {
 					open={!!selectedTraining}
 					onOpenChange={(open) => !open && setSelectedTraining(null)}
 					training={selectedTraining}
-					onAddSet={addSetToTraining}
-					onDeleteSet={deleteSet}
-					onUpdateSet={updateSet}
+					onAddSet={handleAddSet}
+					onDeleteSet={handleDeleteSet}
+					onUpdateSet={handleUpdateSet}
 				/>
 			)}
 		</div>
