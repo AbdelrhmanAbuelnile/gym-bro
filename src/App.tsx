@@ -6,7 +6,8 @@ import { TrainingDetailDialog } from "@/components/training-detail-dialog";
 import type { Training } from "@/types";
 
 function App() {
-	const { trainings, addTraining, addSetToTraining } = useLocalStorage();
+	const { trainings, addTraining, addSetToTraining, deleteSet, updateSet } =
+		useLocalStorage();
 	const [selectedTraining, setSelectedTraining] = useState<Training | null>(
 		null
 	);
@@ -14,7 +15,7 @@ function App() {
 	return (
 		<div className="min-h-screen bg-background text-foreground">
 			<main className="container mx-auto py-8 px-4">
-				<div className="flex flex-col justify-between items-center gap-8">
+				<div className="flex flex-col justify-between items-center gap-8 mb-8">
 					<div className="flex justify-center items-center gap-2">
 						<h1 className="text-3xl font-bold" dir="auto">
 							Gym Bro
@@ -51,6 +52,8 @@ function App() {
 					onOpenChange={(open) => !open && setSelectedTraining(null)}
 					training={selectedTraining}
 					onAddSet={addSetToTraining}
+					onDeleteSet={deleteSet}
+					onUpdateSet={updateSet}
 				/>
 			)}
 		</div>

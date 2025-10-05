@@ -72,11 +72,42 @@ export function useLocalStorage() {
 		});
 	};
 
+	const deleteSet = (trainingId: string, setIndex: number) => {
+		const training = trainings.find((t) => t.id === trainingId);
+		if (!training) return;
+
+		const newSets = [...training.sets];
+		newSets.splice(setIndex, 1);
+		updateTraining(trainingId, {
+			sets: newSets,
+		});
+	};
+
+	const updateSet = (
+		trainingId: string,
+		setIndex: number,
+		updates: Partial<Omit<TrainingSet, "date">>
+	) => {
+		const training = trainings.find((t) => t.id === trainingId);
+		if (!training) return;
+
+		const newSets = [...training.sets];
+		newSets[setIndex] = {
+			...newSets[setIndex],
+			...updates,
+		};
+		updateTraining(trainingId, {
+			sets: newSets,
+		});
+	};
+
 	return {
 		trainings,
 		addTraining,
 		updateTraining,
 		deleteTraining,
 		addSetToTraining,
+		deleteSet,
+		updateSet,
 	};
 }
